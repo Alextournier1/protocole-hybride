@@ -175,6 +175,41 @@
     height: 440px;
     width: auto;
     max-width: 74vw;
+    cursor: zoom-in;
+  }
+  .avis-lightbox {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.94);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+    padding: 30px;
+    cursor: zoom-out;
+  }
+  .avis-lightbox.active { display: flex; }
+  .avis-lightbox img {
+    max-width: 92vw;
+    max-height: 92vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    box-shadow: 0 30px 70px rgba(0,0,0,0.7);
+  }
+  .avis-lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 26px;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--white);
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
   }
   .avis-swiper .swiper-pagination {
     bottom: 0;
@@ -499,6 +534,11 @@
   <div class="footer-text">© 2026 Alexandre Tournier, Préparateur physique & nutritionniste</div>
 </footer>
 
+<div class="avis-lightbox" id="avis-lightbox">
+  <button class="avis-lightbox-close" aria-label="Fermer">✕</button>
+  <img src="" alt="Avis en grand">
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script>
   new Swiper('.avis-swiper', {
@@ -527,6 +567,34 @@
       nextEl: '.swiper-button-next',
       prevEl: '.swiper-button-prev'
     }
+  });
+
+  // Lightbox: click an avis image to view it large
+  var avisLightbox = document.getElementById('avis-lightbox');
+  var avisLightboxImg = avisLightbox.querySelector('img');
+  var avisLightboxClose = avisLightbox.querySelector('.avis-lightbox-close');
+
+  document.querySelectorAll('.avis-card img').forEach(function (img) {
+    img.addEventListener('click', function (e) {
+      e.stopPropagation();
+      avisLightboxImg.src = img.src;
+      avisLightboxImg.alt = img.alt;
+      avisLightbox.classList.add('active');
+    });
+  });
+
+  function closeAvisLightbox() {
+    avisLightbox.classList.remove('active');
+    avisLightboxImg.src = '';
+  }
+
+  avisLightbox.addEventListener('click', closeAvisLightbox);
+  avisLightboxClose.addEventListener('click', function (e) {
+    e.stopPropagation();
+    closeAvisLightbox();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeAvisLightbox();
   });
 </script>
 
